@@ -1,3 +1,5 @@
+const { DATABASE_SCHEMA } = require('../config');
+
 const sumInMemory = (doc_record) => {
   // sum the total population between the year 2018 and 2020 using a HOF.
   if (!doc_record) {
@@ -15,6 +17,23 @@ const sumInMemory = (doc_record) => {
   });
 
   return totalSum;
+};
+
+const sumInLine = async (db) => {
+  if (!db) {
+    throw new Error('Database is missing.');
+  };
+
+  const result = await db.query(`
+      SELECT SUM((data_element->>'Population')::int) AS total_population
+      FROM ${DATABASE_SCHEMA}.api_data,
+      LATERAL jsonb_array_elements(doc_record->'data') AS data_element
+      WHERE (data_element->>'Year')::text IN ('2018', '2019', '2020')
+    `);
+
+  const { total_population } = result[0];
+
+  return total_population;    
 }
 
-module.exports = { sumInMemory };
+module.exports = { sumInMemory, sumInLine };

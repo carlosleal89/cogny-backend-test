@@ -2,7 +2,7 @@ const { DATABASE_SCHEMA, DATABASE_URL, SHOW_PG_MONITOR } = require('./config');
 const massive = require('massive');
 const monitor = require('pg-monitor');
 const { saveApiDataToDB } = require('./helpers/saveDataToDB');
-const { sumInMemory } = require('./helpers/sumFunctions');
+const { sumInMemory, sumInLine } = require('./helpers/sumFunctions');
 
 // Call start
 (async () => {
@@ -80,9 +80,14 @@ const { sumInMemory } = require('./helpers/sumFunctions');
 
         const { doc_record } = result2[0];
 
-        const totalSum = sumInMemory(doc_record);
+        const totalSumInMemory = sumInMemory(doc_record);
 
-        console.log('Sum in memory >>>', totalSum);
+        const totalSuminline = await sumInLine(db);
+
+        console.log('Sum in memory >>>', totalSumInMemory);
+
+        console.log('Sum inLine >>>', totalSuminline);
+        
 
     } catch (e) {
         console.log(e.message)
