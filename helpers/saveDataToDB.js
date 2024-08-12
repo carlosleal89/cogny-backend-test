@@ -7,7 +7,6 @@ const saveApiDataToDB = async (db) => {
   // throw an error if no db is provided
   if (!db) {
     throw new Error('Database is missing.');
-    return;
   }
   
   try {

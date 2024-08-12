@@ -2,6 +2,7 @@ const { DATABASE_SCHEMA, DATABASE_URL, SHOW_PG_MONITOR } = require('./config');
 const massive = require('massive');
 const monitor = require('pg-monitor');
 const { saveApiDataToDB } = require('./helpers/saveDataToDB');
+const { sumInMemory } = require('./helpers/sumFunctions');
 
 // Call start
 (async () => {
@@ -66,17 +67,22 @@ const { saveApiDataToDB } = require('./helpers/saveDataToDB');
     try {
         await migrationUp();
 
-        //exemplo de insert
-        const result1 = await saveApiDataToDB(db);
-        console.log('Data saved to DB');
+        // exemplo de insert
+        // const result1 = await saveApiDataToDB(db);
+        // console.log('Data saved to DB');
         
-        console.log('result1 >>>', result1);
+        // console.log('result1 >>>', result1);
 
         //exemplo select
         const result2 = await db[DATABASE_SCHEMA].api_data.find({
             is_active: true
         });
-        console.log('result2 >>>', result2);
+
+        const { doc_record } = result2[0];
+
+        const totalSum = sumInMemory(doc_record);
+
+        console.log('Sum in memory >>>', totalSum);
 
     } catch (e) {
         console.log(e.message)
