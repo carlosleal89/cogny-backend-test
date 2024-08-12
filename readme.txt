@@ -1,3 +1,13 @@
+## Como Executar a aplicação:
+
+  1. Instale as dependencias:
+
+         npm install
+
+  2. Execute o app:
+
+         npm run dev
+
 Criar um aplicativo console em nodejs que implemente os seguintes requisitos.
 
 1. Consumir a API (https://datausa.io/api/data?drilldowns=Nation&measures=Population) e gravar o resultado na tabela "api_data" no na coluna "doc_record".
