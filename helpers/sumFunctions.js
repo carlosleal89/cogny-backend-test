@@ -19,21 +19,19 @@ const sumInMemory = (doc_record) => {
   return totalSum;
 };
 
-const sumInLine = async (db) => {
+const sumUsingView = async (db) => {
+  // sum the total population between the year 2018 and 2020 using a Postgres View
   if (!db) {
     throw new Error('Database is missing.');
   };
 
   const result = await db.query(`
-      SELECT SUM((data_element->>'Population')::int) AS total_population
-      FROM ${DATABASE_SCHEMA}.api_data,
-      LATERAL jsonb_array_elements(doc_record->'data') AS data_element
-      WHERE (data_element->>'Year')::text IN ('2018', '2019', '2020')
-    `);
+    SELECT * FROM ${DATABASE_SCHEMA}.vw_total_population
+  `);
 
   const { total_population } = result[0];
 
   return total_population;    
 }
 
-module.exports = { sumInMemory, sumInLine };
+module.exports = { sumInMemory, sumUsingView };
